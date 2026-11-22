@@ -1,15 +1,1 @@
-import fs from 'node:fs';
-let I=process.env.MAKEFUN_INPUT_DIR||'/input',O=process.env.MAKEFUN_OUTPUT_DIR||'/output';
-for(let id of fs.readdirSync(I).sort()){
-let a=fs.readFileSync(I+'/'+id+'/level.txt','utf8').trimEnd().split('\n'),W=Math.max(...a.map(s=>s.length)),N=W*a.length,D=[-W,W,-1,1],w=Array(N).fill(1),g=Array(N).fill(0),B=[],p;
-for(let y=1;y<a.length-1;y++)for(let x=1;x<W-1;x++){let c=a[y][x],i=y*W+x;if(c&&c!='#'){w[i]=0;g[i]=+'.*+'.includes(c);if('$*'.includes(c))B.push(i);if('@+'.includes(c))p=i}}
-let live=(w,g)=>{let v=Array(N).fill(0),q=[];g.forEach((b,i)=>{if(b){v[i]=1;q.push(i)}});for(let x of q)for(let d of D){let y=x-d;if(!w[y]&&!w[y-d]&&!v[y]){v[y]=1;q.push(y)}}return v},
-solve=(w,g,B,p)=>{let v=live(w,g);if(B.some(b=>!v[b]))return null;let r=new Int32Array(N),s=new Int32Array(N),z=0,h=0,o=new Uint8Array(N),f=(a,k,p)=>{let q=[p],m=p;a[p]=k;for(let x of q){if(x<m)m=x;for(let d of D){let t=x+d;if(!w[t]&&!o[t]&&a[t]!=k){a[t]=k;q.push(t)}}}return m},key=(b,p)=>b.reduce((k,x)=>k*N+x,p),done=b=>b.every(x=>g[x]);B=B.slice().sort((a,b)=>a-b);B.forEach(b=>o[b]=1);let S=[[B,f(r,++z,p),-1]],seen=new Set([key(B,S[0][1])]),end=done(B)?0:-1;
-for(let j=0;j<S.length&&end<0;j++){let b=S[j][0];o.fill(0);b.forEach(x=>o[x]=1);f(r,++z,S[j][1]);for(let x of b){for(let d=0;d<4;d++){let t=x+D[d];if(w[t]||o[t]||!v[t]||r[x-D[d]]!=z)continue;o[x]=0;o[t]=1;let bad=0;for(let u of [t,t-1,t-W,t-W-1]){let c=[u,u+1,u+W,u+W+1];if(c.every(i=>w[i]||o[i])&&c.some(i=>o[i]&&!g[i]))bad=1}if(!bad){let c=b.map(i=>i==x?t:i).sort((a,b)=>a-b),rep=f(s,++h,x),k=key(c,rep);if(!seen.has(k)){if(S.length>=250000)return null;seen.add(k);S.push([c,rep,j,x,d]);if(done(c))end=S.length-1}}o[t]=0;o[x]=1;if(end>=0)break}if(end>=0)break}}
-if(end<0)return null;let steps=[],out='',b=B.slice();for(let j=end;S[j][2]>=0;j=S[j][2])steps.push(S[j]);for(let c of steps.reverse()){let x=c[3],d=c[4],t=x-D[d],q=[p],prev=new Int32Array(N).fill(-1),pd=[];o.fill(0);b.forEach(i=>o[i]=1);prev[p]=p;for(let u of q){if(u==t)break;for(let k=0;k<4;k++){let v=u+D[k];if(!w[v]&&!o[v]&&prev[v]<0){prev[v]=u;pd[v]=k;q.push(v)}}}let walk='';for(let u=t;u!=p;u=prev[u])walk='udlr'[pd[u]]+walk;out+=walk+'UDLR'[d];b[b.indexOf(x)]=x+D[d];p=x}return out},
-v=live(w,g),cut=w.map((_,i)=>Math.floor(i/W)==Math.floor(p/W)&&!v[i]),parts=[],mark=Array(N).fill(-1),ok=!B.some(i=>cut[i])&&!g.some((x,i)=>x&&cut[i]);
-for(let i=0;i<N;i++)if(!w[i]&&!cut[i]&&mark[i]<0){let q=[i],n=parts.length;mark[i]=n;for(let x of q)for(let d of D){let t=x+d;if(!w[t]&&!cut[t]&&mark[t]<0){mark[t]=n;q.push(t)}}let b=B.filter(x=>mark[x]==n),G=g.map((x,i)=>+(x&&mark[i]==n));if(b.length!=G.reduce((a,b)=>a+b,0))ok=false;if(b.length)parts.push([b,G]);else parts.push([[],G])}
-let out='',P=p,rooms=parts.filter(x=>x[0].length);
-if(ok)for(let j=0;j<rooms.length;j++){let wall=w.slice();rooms.forEach(([b,G],k)=>{if(k!=j)(k<j?G.flatMap((x,i)=>x?[i]:[]):b).forEach(i=>wall[i]=1)});let s=solve(wall,rooms[j][1],rooms[j][0],P);if(s===null){ok=false;break}out+=s;for(let c of s.toLowerCase())P+=D['udlr'.indexOf(c)]}
-if(!ok)out=solve(w,g,B,p)||'';fs.mkdirSync(O+'/'+id,{recursive:true});fs.writeFileSync(O+'/'+id+'/solution.txt',(out.length<65535?out:'')+'\n');
-}
+eval(process.env.S)
